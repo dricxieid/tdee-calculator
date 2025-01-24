@@ -29,29 +29,36 @@ document.getElementById("tdeeForm").addEventListener("submit", function (e) {
     idealWeight = 45.5 + 0.9 * (height - 152.4); // For females
   }
 
-  // Protein calculation based on activity level
-  let proteinPerKg;
-  if (activity <= 1.375) {
-    proteinPerKg = 0.8; // Sedentary
-  } else if (activity <= 1.55) {
-    proteinPerKg = 1.0; // Lightly Active
-  } else if (activity <= 1.725) {
-    proteinPerKg = 1.4; // Moderately Active
-  } else {
-    proteinPerKg = 2.0; // Very Active
-  }
-
-  const dailyProtein = (weight * proteinPerKg).toFixed(1); // Total daily protein intake (in grams)
-
-  // Calculate macronutrient breakdown based on TDEE
-  const proteinCalories = (tdee * 0.15).toFixed(0); // 15% of TDEE for protein
-  const carbCalories = (tdee * 0.55).toFixed(0); // 55% of TDEE for carbohydrates
-  const fatCalories = (tdee * 0.25).toFixed(0); // 25% of TDEE for fats
-
   // Recommendations for calorie intake
   const maintainWeight = Math.round(tdee);
   const loseWeight = Math.round(tdee - 500); // ~500 calorie deficit
   const gainWeight = Math.round(tdee + 500); // ~500 calorie surplus
+
+  // Calculate Protein Intake (grams)
+  let proteinGrams;
+  if (activity <= 1.375) { // Sedentary
+    proteinGrams = weight * 0.8;
+  } else if (activity <= 1.55) { // Lightly to Moderately Active
+    proteinGrams = weight * 1.0;
+  } else { // Very Active
+    proteinGrams = weight * 1.4;
+  }
+
+  // Calculate Macronutrients based on TDEE
+  const proteinCalories = maintainWeight * 0.2;  // 20% protein from TDEE
+  const carbCalories = maintainWeight * 0.55;    // 55% carbs from TDEE
+  const fatCalories = maintainWeight * 0.25;     // 25% fat from TDEE
+
+  const proteinGramsFromCalories = Math.round(proteinCalories / 4); // 1g protein = 4 calories
+  const carbGramsFromCalories = Math.round(carbCalories / 4);     // 1g carb = 4 calories
+  const fatGramsFromCalories = Math.round(fatCalories / 9);       // 1g fat = 9 calories
+
+  // Food Recommendations (based on grams)
+  const foodRecommendations = {
+    protein: `For ${proteinGrams} grams of protein, you could consume around 200 grams of chicken breast, 2 eggs, or 300 grams of tofu.`,
+    carbs: `For ${carbGramsFromCalories} grams of carbs, you could consume around 250 grams of rice, 2 slices of bread, or 300 grams of pasta.`,
+    fats: `For ${fatGramsFromCalories} grams of fats, you could consume around 1 avocado, 2 tablespoons of olive oil, or 30 grams of almonds.`
+  };
 
   // Display the result
   document.getElementById("result").innerHTML = `
@@ -60,13 +67,10 @@ document.getElementById("tdeeForm").addEventListener("submit", function (e) {
       <p>Your ideal weight is approximately <strong>${idealWeight.toFixed(1)} kg</strong>.</p>
       <p>To lose weight: <strong>${loseWeight} calories/day</strong>.</p>
       <p>To gain weight: <strong>${gainWeight} calories/day</strong>.</p>
-      <p>Your daily protein intake should be approximately <strong>${dailyProtein} grams</strong>.</p>
-      <p>Suggested macronutrient breakdown:</p>
-      <ul>
-        <li>Protein: <strong>${proteinCalories} calories (~${(proteinCalories / 4).toFixed(0)} grams)</strong></li>
-        <li>Carbohydrates: <strong>${carbCalories} calories (~${(carbCalories / 4).toFixed(0)} grams)</strong></li>
-        <li>Fats: <strong>${fatCalories} calories (~${(fatCalories / 9).toFixed(0)} grams)</strong></li>
-      </ul>
+      <p>Your daily protein intake: <strong>${proteinGrams.toFixed(1)} grams</strong>.</p>
+      <p>Protein food recommendation: <strong>${foodRecommendations.protein}</strong></p>
+      <p>Carbohydrates food recommendation: <strong>${foodRecommendations.carbs}</strong></p>
+      <p>Fats food recommendation: <strong>${foodRecommendations.fats}</strong></p>
     </div>
   `;
 
