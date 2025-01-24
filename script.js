@@ -1,3 +1,5 @@
+let chartInstance = null; // Variable global untuk menyimpan instance chart
+
 document.getElementById("tdeeForm").addEventListener("submit", function (e) {
   e.preventDefault();
 
@@ -42,9 +44,14 @@ document.getElementById("tdeeForm").addEventListener("submit", function (e) {
     </div>
   `;
 
-  // Create a chart
+  // Destroy existing chart if it exists
+  if (chartInstance) {
+    chartInstance.destroy();
+  }
+
+  // Create a new chart
   const ctx = document.getElementById("calorieChart").getContext("2d");
-  new Chart(ctx, {
+  chartInstance = new Chart(ctx, {
     type: "bar",
     data: {
       labels: ["Maintain Weight", "Lose Weight", "Gain Weight"],
