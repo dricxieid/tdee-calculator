@@ -1,0 +1,15 @@
+body {
+  font-family: Arial, sans-serif;
+}
+
+.card {
+  max-width: 500px;
+  margin: 0 auto;
+  border-radius: 15px;
+}
+
+canvas {
+  max-width: 500px;
+  margin: 0 auto;
+  display: block;
+}
